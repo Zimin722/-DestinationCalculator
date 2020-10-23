@@ -1,0 +1,25 @@
+class DestinationCalculator:
+    def __init__(self):
+        self.radius=3963
+        self.city_location={}
+    def process(self,line:str):
+        # c=re.search(r'(.*):(.*):(.*):(.*)',line).groups()
+        c=line.split(":")
+        if c[0]=="LOC":
+            self.city_location[c[1]]=(float(c[2]),float(c[3]))
+            return c[1]
+        else:
+            dep,arr=c[2],c[3]
+            lati_dep,long_dep=self.city_location[dep]
+            lati_arr,long_arr=self.city_location[arr]
+            distance=self.radius*acos(sin(radians(lati_dep))*sin(radians(lati_arr))+cos(radians(lati_dep))*cos(radians(lati_arr))*cos(abs(radians(long_dep)-radians(long_arr))))
+            return(str(c[1])+":"+str(dep)+":"+str(arr)+":"+str(int(distance)))
+
+line1="LOC:CHI:41.836944:-87.684722"
+line2="LOC:NYC:40.7127:-74.0059"
+line3="TRIP:COFFEE1C:CHI:NYC"
+if __name__=="__main__" :
+    dest_calc= DestinationCalculator()
+    print(dest_calc.process(line1))
+    print(dest_calc.process(line2))
+    print(dest_calc.process(line3))
